@@ -15,7 +15,7 @@ const GRAIN = `url("data:image/svg+xml,${encodeURIComponent(
 )}")`;
 
 /** Soft, blurred branch shadows — like sunlight falling through leaves onto linen. */
-function LeafShadows() {
+export function LeafShadows() {
   const r = seeded(31);
   const branches = [
     { x: -40, y: -30, a: 32, len: 520 },

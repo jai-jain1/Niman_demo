@@ -110,16 +110,19 @@ function useMonogram(a: string, b: string) {
 /* ------------------------------------------------------------------ */
 /*  Seal                                                                */
 /* ------------------------------------------------------------------ */
-function useMaterials(monogram: THREE.Texture) {
+function useMaterials(monogram: THREE.Texture, waxColor: string) {
   return useMemo(() => {
+    // Dark wax (cocoa) needs a warm, low sheen; ivory wax keeps its creamy glow.
+    const dark = new THREE.Color(waxColor).getHSL({ h: 0, s: 0, l: 0 }).l < 0.35;
     const wax = new THREE.MeshPhysicalMaterial({
-      color: "#f7ead3",
-      roughness: 0.32,
-      clearcoat: 0.8,
-      clearcoatRoughness: 0.22,
-      sheen: 0.6,
-      sheenColor: new THREE.Color("#fff1d2"),
+      color: waxColor,
+      roughness: dark ? 0.42 : 0.32,
+      clearcoat: dark ? 0.55 : 0.8,
+      clearcoatRoughness: dark ? 0.3 : 0.22,
+      sheen: dark ? 0.15 : 0.6,
+      sheenColor: new THREE.Color(dark ? "#a0705a" : "#fff1d2"),
       sheenRoughness: 0.5,
+      envMapIntensity: dark ? 0.6 : 1,
     });
     // A touch of warm emissive keeps the gold reading as gold, not bronze, in shadow.
     const gold = new THREE.MeshStandardMaterial({
@@ -142,7 +145,7 @@ function useMaterials(monogram: THREE.Texture) {
       emissiveIntensity: 0.35,
     });
     return { wax, gold, goldRing };
-  }, [monogram]);
+  }, [monogram, waxColor]);
 }
 
 type Mats = ReturnType<typeof useMaterials>;
@@ -184,10 +187,20 @@ function Face({ mats, side }: { mats: Mats; side?: "left" | "right" }) {
   );
 }
 
-function Seal({ initials, cracked, tilt }: { initials: [string, string]; cracked: boolean; tilt: React.RefObject<{ x: number; y: number }> }) {
+function Seal({
+  initials,
+  cracked,
+  tilt,
+  wax,
+}: {
+  initials: [string, string];
+  cracked: boolean;
+  tilt: React.RefObject<{ x: number; y: number }>;
+  wax: string;
+}) {
   const geo = useSealGeometries();
   const monogram = useMonogram(initials[0], initials[1]);
-  const mats = useMaterials(monogram);
+  const mats = useMaterials(monogram, wax);
   const halfMats = useMemo(() => {
     const clone = (m: THREE.Material) => Object.assign(m.clone(), { transparent: true });
     return [0, 1].map(() => ({ wax: clone(mats.wax), gold: clone(mats.gold), goldRing: clone(mats.goldRing) }) as Mats);
@@ -270,6 +283,9 @@ export default function WaxSeal3D({
   x = 0.5,
   y = 0.47,
   widthRatio = 0.34,
+  wax = "#f7ead3",
+  dust = true,
+  paused = false,
   onReady,
 }: {
   initials: [string, string];
@@ -277,6 +293,12 @@ export default function WaxSeal3D({
   x?: number;
   y?: number;
   widthRatio?: number;
+  /** Wax colour — ivory by default, cocoa for the Pearl & Linen first slide. */
+  wax?: string;
+  /** Drift gold dust across the canvas (only when the canvas covers the scene). */
+  dust?: boolean;
+  /** Stop rendering, e.g. when scrolled out of view. */
+  paused?: boolean;
   onReady?: () => void;
 }) {
   const tilt = useRef({ x: 0, y: 0 });
@@ -300,7 +322,10 @@ export default function WaxSeal3D({
 
   return (
     <Canvas
-      dpr={[1, 1.5]}
+      frameloop={paused ? "never" : "always"}
+      // Measure the layout size, not the on-screen size: parents may be CSS-scaled.
+      resize={{ offsetSize: true }}
+      dpr={[1, 2]}
       camera={{ position: [0, 0, 11], fov: 30 }}
       gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
       style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
@@ -316,9 +341,9 @@ export default function WaxSeal3D({
         <Lightformer form="ring" intensity={2.4} color="#ffcf80" position={[0, -3, 3]} scale={3} />
       </Environment>
       <Placed x={x} y={y} widthRatio={widthRatio}>
-        <Seal initials={initials} cracked={cracked} tilt={tilt} />
+        <Seal initials={initials} cracked={cracked} tilt={tilt} wax={wax} />
       </Placed>
-      <Dust />
+      {dust && <Dust />}
     </Canvas>
   );
 }
