@@ -3,8 +3,10 @@ import type { Invite } from "@/content/invites/types";
 import { WaxSeal } from "@/components/ornaments";
 import { Reveal } from "@/components/reveal";
 import { formatDayNum, formatYear } from "@/lib/invite-utils";
+import { CocoaSeal, useInviteTheme } from "./linen";
 
 export function ThankYou({ invite }: { invite: Invite }) {
+  const pearl = useInviteTheme() === "pearl";
   const d = invite.weddingDate;
   const month = new Intl.DateTimeFormat("en-IN", { month: "2-digit", timeZone: "Asia/Kolkata" }).format(new Date(d));
   return (
@@ -13,8 +15,9 @@ export function ThankYou({ invite }: { invite: Invite }) {
         <div
           className="relative rotate-[-1.5deg] p-3 shadow-[0_40px_80px_-30px_rgba(30,0,6,.7)]"
           style={{
-            background:
-              "repeating-linear-gradient(135deg,#c0182f 0 14px,#fbf6ee 14px 22px,#d4ab5a 22px 36px,#fbf6ee 36px 44px)",
+            background: pearl
+              ? "repeating-linear-gradient(135deg,#7a5642 0 14px,#fbf6ee 14px 22px,#c6ab86 22px 36px,#fbf6ee 36px 44px)"
+              : "repeating-linear-gradient(135deg,#c0182f 0 14px,#fbf6ee 14px 22px,#d4ab5a 22px 36px,#fbf6ee 36px 44px)",
           }}
         >
           <div className="paper-grain relative bg-ivory px-6 py-10 sm:px-10">
@@ -36,7 +39,7 @@ export function ThankYou({ invite }: { invite: Invite }) {
                 </div>
               </div>
               <div className="grid size-24 shrink-0 rotate-3 place-items-center border-[5px] border-dotted border-paper bg-white p-1.5 shadow-md outline outline-1 outline-gold-300/70">
-                <WaxSeal a={invite.partner1.first[0]} b={invite.partner2.first[0]} className="size-full" />
+                {pearl ? <CocoaSeal className="size-full" /> : <WaxSeal a={invite.partner1.first[0]} b={invite.partner2.first[0]} className="size-full" />}
               </div>
             </div>
 

@@ -7,7 +7,17 @@ type Petal = { x: number; y: number; r: number; vx: number; vy: number; rot: num
 const COLORS = ["#c2183f", "#e0365a", "#f28c07", "#f6b31a", "#f7d2d9", "#9e1030"];
 
 /** Rose and marigold petals tumbling down after the gates open. */
-export function PetalShower({ active, count = 90, duration = 7000 }: { active: boolean; count?: number; duration?: number }) {
+export function PetalShower({
+  active,
+  count = 90,
+  duration = 7000,
+  colors = COLORS,
+}: {
+  active: boolean;
+  count?: number;
+  duration?: number;
+  colors?: string[];
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -38,7 +48,7 @@ export function PetalShower({ active, count = 90, duration = 7000 }: { active: b
       vr: -0.04 + Math.random() * 0.08,
       flip: Math.random() * Math.PI,
       vf: 0.03 + Math.random() * 0.06,
-      color: COLORS[(Math.random() * COLORS.length) | 0],
+      color: colors[(Math.random() * colors.length) | 0],
     }));
 
     const start = performance.now();
@@ -80,7 +90,7 @@ export function PetalShower({ active, count = 90, duration = 7000 }: { active: b
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
     };
-  }, [active, count, duration]);
+  }, [active, count, duration, colors]);
 
   return <canvas ref={ref} className="pointer-events-none fixed inset-0 z-[55] h-full w-full" aria-hidden />;
 }

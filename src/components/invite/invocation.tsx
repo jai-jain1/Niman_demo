@@ -1,13 +1,23 @@
 import type { Invite } from "@/content/invites/types";
 import { CornerFlourish, LotusDivider, Mandala, Toran } from "@/components/ornaments";
 import { Reveal, WordReveal } from "@/components/reveal";
+import { PearlStrand, useInviteTheme } from "./linen";
 
 export function Invocation({ invite }: { invite: Invite }) {
+  const pearl = useInviteTheme() === "pearl";
   const { partner1: a, partner2: b } = invite;
   return (
     <section id="invitation" className="paper-grain relative overflow-hidden bg-ivory pt-0 pb-24">
       <div className="h-[3px] bg-foil" />
-      <Toran className="h-24 w-full sm:h-32" />
+      {pearl ? (
+        <div className="flex justify-center gap-0 overflow-hidden pt-2">
+          {[0, 1, 2, 3].map((i) => (
+            <PearlStrand key={i} width={260} sag={22} count={26} className="w-[260px] shrink-0 sm:w-[340px]" />
+          ))}
+        </div>
+      ) : (
+        <Toran className="h-24 w-full sm:h-32" />
+      )}
 
       <Mandala className="pointer-events-none absolute top-40 left-1/2 w-[46rem] max-w-none -translate-x-1/2 text-gold-400/15 md:animate-spin-slow [animation-duration:120s]" />
 

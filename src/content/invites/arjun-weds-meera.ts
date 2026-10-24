@@ -169,6 +169,7 @@ export const arjunWedsMeera: Invite = {
     background: { src: "/invites/arjun-weds-meera/entry.mp3", title: "Aaj Sajeya · Goldie Sohel", volume: 0.6 },
   },
   entry: "video",
+  theme: "pearl",
   openingVideo: {
     src: "/invites/arjun-weds-meera/opening/opening.mp4",
     poster: "/invites/arjun-weds-meera/opening/poster.jpg",

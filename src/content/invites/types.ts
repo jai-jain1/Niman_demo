@@ -71,6 +71,8 @@ export type Invite = {
    * embossed envelope with a 3D wax seal (`envelope`, default), or the palace gates.
    */
   entry?: "video" | "envelope" | "gate";
+  /** Visual theme: `pearl` (linen, ivory, cocoa & champagne) or `royal` (maroon, gold & night blue). */
+  theme?: "royal" | "pearl";
   openingVideo?: OpeningVideo;
   /** Rendered artwork for the palace-gate entry. Missing files fall back to the illustrated gate. */
   intro?: IntroArt;

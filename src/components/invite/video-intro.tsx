@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import type { OpeningVideo } from "@/content/invites/types";
+import { LINEN, LinenBackdrop } from "./linen";
 
 const royal = [0.22, 1, 0.36, 1] as const;
 const noopSubscribe = () => () => {};
@@ -84,18 +85,19 @@ export function VideoIntro({
       {phase !== "leaving" && (
         <motion.div
           key="video-intro"
-          className="fixed inset-0 z-[60] grid place-items-center overflow-hidden bg-[#e9e3da]"
+          className="fixed inset-0 z-[60] grid place-items-center overflow-hidden"
+          style={{ background: LINEN }}
           exit={{ opacity: 0, transition: { duration: 1.1, ease: "easeInOut" } }}
           role="dialog"
           aria-label="Invitation envelope"
         >
-          {/* soft, blurred copy of the scene for wide screens */}
-          {/* eslint-disable-next-line @next/next/no-img-element -- decorative backdrop */}
-          <img src={video.poster} alt="" aria-hidden className="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-2xl" />
+          {/* the same linen the video is filmed on, so wide screens read as one continuous scene */}
+          <LinenBackdrop />
 
-          {/* 9:16 frame: covers phones edge to edge, sits as a card on wide screens */}
+          {/* 9:16 frame: covers phones edge to edge; on wide screens it is full height and its
+              edges dissolve into the matching linen, so only the envelope stands out */}
           <motion.div
-            className="relative h-[max(100dvh,177.78vw)] w-[max(100vw,56.25dvh)] shrink-0 overflow-hidden md:h-[94dvh] md:w-[52.875dvh] md:rounded-[28px] md:shadow-[0_40px_90px_rgba(60,40,20,.35)]"
+            className="relative h-[max(100dvh,177.78vw)] w-[max(100vw,56.25dvh)] shrink-0 overflow-hidden md:h-dvh md:w-[56.25dvh] md:[mask-composite:intersect] md:[mask-image:linear-gradient(90deg,transparent,#000_11%,#000_89%,transparent),linear-gradient(transparent,#000_4%,#000_95%,transparent)]"
             initial={{ opacity: 0, scale: 1.03 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.1, ease: royal }}

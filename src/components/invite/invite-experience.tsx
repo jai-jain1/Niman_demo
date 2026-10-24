@@ -11,6 +11,8 @@ import { Events } from "./events";
 import { GateIntro } from "./gate-intro";
 import { Hero } from "./hero";
 import { Invocation } from "./invocation";
+import { InviteTheme } from "./linen";
+import { PearlHero } from "./pearl-hero";
 import { Journey } from "./journey";
 import { PetalShower } from "./petal-shower";
 import { Rsvp } from "./rsvp";
@@ -44,6 +46,13 @@ export function InviteExperience({ invite }: { invite: Invite }) {
   const initials: [string, string] = [invite.partner1.first[0], invite.partner2.first[0]];
   const names = `${invite.partner1.first} & ${invite.partner2.first}`;
 
+  const theme = invite.theme ?? "royal";
+  // The page background (overscroll, safe areas) follows the theme too.
+  useEffect(() => {
+    document.documentElement.classList.toggle("theme-pearl", theme === "pearl");
+    return () => document.documentElement.classList.remove("theme-pearl");
+  }, [theme]);
+
   // Every visit starts at the gate, never at a restored scroll position.
   useEffect(() => {
     history.scrollRestoration = "manual";
@@ -70,7 +79,8 @@ export function InviteExperience({ invite }: { invite: Invite }) {
   }, [gateGone]);
 
   return (
-    <main className="relative">
+    <InviteTheme.Provider value={theme}>
+    <main className={`relative ${theme === "pearl" ? "theme-pearl bg-ivory" : ""}`}>
       {useVideo ? (
         <VideoIntro
           guest={guest}
@@ -103,9 +113,9 @@ export function InviteExperience({ invite }: { invite: Invite }) {
           onDone={() => setGateGone(true)}
         />
       )}
-      <PetalShower active={revealed} />
+      <PetalShower active={revealed} colors={theme === "pearl" ? PEARL_PETALS : undefined} />
 
-      <Hero invite={invite} revealed={revealed} />
+      {theme === "pearl" ? <PearlHero invite={invite} revealed={revealed} /> : <Hero invite={invite} revealed={revealed} />}
       <Invocation invite={invite} />
       <SaveTheDate invite={invite} />
       <Story invite={invite} />
@@ -126,5 +136,8 @@ export function InviteExperience({ invite }: { invite: Invite }) {
         />
       )}
     </main>
+    </InviteTheme.Provider>
   );
 }
+
+const PEARL_PETALS = ["#fbf6ee", "#efe4d4", "#e3d2bb", "#d8c4a6", "#f5ebe4", "#c9b08c"];

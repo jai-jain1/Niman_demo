@@ -13,7 +13,8 @@ import {
   googleCalendarLink,
   mapsLink,
 } from "@/lib/invite-utils";
-import { EventArt, THEMES } from "./event-art";
+import { EventArt, PEARL_THEMES, THEMES } from "./event-art";
+import { useInviteTheme } from "./linen";
 import { SectionHeading } from "./section-heading";
 
 function CalendarMenu({ event, couple, slug, chip }: { event: InviteEvent; couple: string; slug: string; chip: string }) {
@@ -71,7 +72,7 @@ function CalendarMenu({ event, couple, slug, chip }: { event: InviteEvent; coupl
 }
 
 function EventCard({ event, index, total, invite }: { event: InviteEvent; index: number; total: number; invite: Invite }) {
-  const t = THEMES[event.theme];
+  const t = (useInviteTheme() === "pearl" ? PEARL_THEMES : THEMES)[event.theme];
   const couple = `${invite.partner1.first} & ${invite.partner2.first}`;
 
   return (

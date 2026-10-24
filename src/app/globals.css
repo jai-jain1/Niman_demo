@@ -53,6 +53,7 @@
   --animate-marquee: marquee 40s linear infinite;
   --animate-sheen: sheen 6.5s cubic-bezier(0.45, 0, 0.25, 1) infinite;
   --animate-glint: glint 3.6s ease-in-out infinite;
+  --animate-leaf: leaf 16s ease-in-out infinite alternate;
 
   @keyframes shimmer {
     from { background-position: 200% 50%; }
@@ -65,6 +66,10 @@
   @keyframes pulse-ring {
     0% { transform: scale(0.9); opacity: 0.7; }
     100% { transform: scale(1.6); opacity: 0; }
+  }
+  @keyframes leaf {
+    from { transform: translate(-1.2%, -0.8%) rotate(-0.6deg); }
+    to { transform: translate(1.2%, 0.9%) rotate(0.7deg); }
   }
   @keyframes sheen {
     0% { transform: translateX(-160%) skewX(-18deg); }
@@ -83,6 +88,7 @@
 
 :root {
   color-scheme: light;
+  --gold-foil-deep: linear-gradient(110deg, #6b4a14 0%, #b8892f 28%, #7c5b1f 48%, #d2a54e 64%, #8a6420 82%, #5f4110 100%);
   --gold-foil: linear-gradient(
     110deg,
     #9a7428 0%,
@@ -121,6 +127,44 @@ body {
   border-radius: 6px;
 }
 
+/* ---------- Pearl & Linen theme ----------
+   Re-maps the palette to match the filmed envelope opening: linen, ivory,
+   cocoa wax and champagne pearls. Utilities read these variables, so every
+   section follows without per-component changes. */
+.theme-pearl {
+  --color-ivory: #f6f2ec;
+  --color-paper: #eee8df;
+  --color-blush: #f1e9e1;
+  --color-sand: #e2d9cc;
+
+  --color-maroon-50: #f6f0ea;
+  --color-maroon-100: #eadfd4;
+  --color-maroon-300: #b39582;
+  --color-maroon-500: #7a5642;
+  --color-maroon-600: #66402e;
+  --color-maroon-700: #523426;
+  --color-maroon-900: #33231a;
+
+  --color-gold-100: #f3ece1;
+  --color-gold-200: #e8dcc8;
+  --color-gold-300: #d8c4a6;
+  --color-gold-400: #c6ab86;
+  --color-gold-500: #b3946b;
+  --color-gold-600: #957852;
+  --color-gold-700: #75603f;
+
+  --color-night-500: #b8ada1;
+  --color-night-700: #8f8478;
+  --color-night-900: #cbc5be;
+
+  --color-henna: #7f8a68;
+  --color-ink: #3b2c23;
+
+  --gold-foil: linear-gradient(110deg, #8f7350 0%, #d9c3a0 22%, #b3946b 40%, #f3e8d4 52%, #a88a62 66%, #d4bd98 82%, #7f6545 100%);
+  --gold-foil-deep: linear-gradient(110deg, #5e4330 0%, #8a6a4c 30%, #66402e 50%, #9b7a58 68%, #5a3f2d 100%);
+}
+html.theme-pearl body { background: #f6f2ec; }
+
 /* ---------- Letterpress emboss layers (see envelope-intro.tsx) ---------- */
 .emb .d { stroke: var(--emb-detail); stroke-width: 0.55; }
 .emb .s { fill: none; stroke: var(--emb-stem); stroke-width: 1.4; stroke-linecap: round; }
@@ -146,7 +190,7 @@ body {
 
 /* Deeper foil for ivory/paper backgrounds where the bright foil washes out. */
 @utility text-foil-deep {
-  background: linear-gradient(110deg, #6b4a14 0%, #b8892f 28%, #7c5b1f 48%, #d2a54e 64%, #8a6420 82%, #5f4110 100%);
+  background: var(--gold-foil-deep);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

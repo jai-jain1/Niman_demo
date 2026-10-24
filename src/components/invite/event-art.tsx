@@ -116,6 +116,45 @@ export function EventArt({ theme, className = "" }: { theme: EventTheme; classNa
   }
 }
 
+/** Soft, light cards for the Pearl & Linen theme — each function keeps a gentle tint. */
+export const PEARL_THEMES: Record<EventTheme, { bg: string; ink: string; accent: string; art: string; chip: string }> = {
+  mehndi: {
+    bg: "bg-[linear-gradient(160deg,#f4f3ec,#e6e8db)]",
+    ink: "text-[#3d4232]",
+    accent: "text-[#5d6b47]",
+    art: "text-[#7f8a68]/70",
+    chip: "bg-white/60 ring-[#7f8a68]/30",
+  },
+  haldi: {
+    bg: "bg-[linear-gradient(160deg,#fbf6e8,#f2e6c9)]",
+    ink: "text-[#4a3b22]",
+    accent: "text-[#9a7a3c]",
+    art: "text-[#b3946b]/75",
+    chip: "bg-white/60 ring-[#b3946b]/35",
+  },
+  sangeet: {
+    bg: "bg-[linear-gradient(160deg,#f5f1f4,#e7e0e8)]",
+    ink: "text-[#3d3340]",
+    accent: "text-[#76627c]",
+    art: "text-[#9a879f]/70",
+    chip: "bg-white/60 ring-[#9a879f]/35",
+  },
+  wedding: {
+    bg: "bg-[linear-gradient(160deg,#faf6f0,#ece2d4)]",
+    ink: "text-[#3b2c23]",
+    accent: "text-[#66402e]",
+    art: "text-[#b3946b]/80",
+    chip: "bg-white/65 ring-[#b3946b]/40",
+  },
+  reception: {
+    bg: "bg-[linear-gradient(160deg,#f3eee8,#ddd3c7)]",
+    ink: "text-[#33281f]",
+    accent: "text-[#5a4130]",
+    art: "text-[#8f7350]/75",
+    chip: "bg-white/60 ring-[#8f7350]/35",
+  },
+};
+
 export const THEMES: Record<EventTheme, { bg: string; ink: string; accent: string; art: string; chip: string }> = {
   mehndi: {
     bg: "bg-[radial-gradient(120%_80%_at_50%_0%,#7f9a45_0%,#4b6624_55%,#2f4416_100%)]",
