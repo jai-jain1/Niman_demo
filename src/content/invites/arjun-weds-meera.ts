@@ -168,7 +168,13 @@ export const arjunWedsMeera: Invite = {
     // Add background.mp3 and point this at it to use a different song.
     background: { src: "/invites/arjun-weds-meera/entry.mp3", title: "Aaj Sajeya · Goldie Sohel", volume: 0.6 },
   },
-  entry: "envelope",
+  entry: "video",
+  openingVideo: {
+    src: "/invites/arjun-weds-meera/opening/opening.mp4",
+    poster: "/invites/arjun-weds-meera/opening/poster.jpg",
+    seal: { x: 0.497, y: 0.49 },
+    card: { x: 0.5, y: 0.545, w: 0.5 },
+  },
   intro: {
     // Used when entry is "gate". Generate these with the prompts in ART-PROMPTS.md and drop them in this folder.
     gateVideo: "/invites/arjun-weds-meera/intro/gate-open.mp4",

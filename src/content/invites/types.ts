@@ -66,10 +66,25 @@ export type Invite = {
    * fall back to a gentle synthesised tanpura.
    */
   music?: { entry?: SongClip; background?: SongClip };
-  /** Opening style: an embossed envelope with a 3D wax seal (default), or the palace gates. */
-  entry?: "envelope" | "gate";
+  /**
+   * Opening style: a filmed envelope clip (`video`, needs `openingVideo`), the
+   * embossed envelope with a 3D wax seal (`envelope`, default), or the palace gates.
+   */
+  entry?: "video" | "envelope" | "gate";
+  openingVideo?: OpeningVideo;
   /** Rendered artwork for the palace-gate entry. Missing files fall back to the illustrated gate. */
   intro?: IntroArt;
+};
+
+export type OpeningVideo = {
+  /** 9:16 MP4, no audio. */
+  src: string;
+  /** The clip's first frame, shown until the guest taps. */
+  poster: string;
+  /** Where the wax seal sits in the frame (0–1), used as the tap target. */
+  seal: { x: number; y: number };
+  /** Centre and width (0–1) of the blank card the clip ends on, where the names are written. */
+  card: { x: number; y: number; w: number };
 };
 
 export type IntroArt = {

@@ -6,6 +6,7 @@ import type { Invite } from "@/content/invites/types";
 import { formatDayNum, formatMonthShort, formatYear } from "@/lib/invite-utils";
 import { Dock } from "./dock";
 import { EnvelopeIntro } from "./envelope-intro";
+import { VideoIntro } from "./video-intro";
 import { Events } from "./events";
 import { GateIntro } from "./gate-intro";
 import { Hero } from "./hero";
@@ -35,6 +36,10 @@ export function InviteExperience({ invite }: { invite: Invite }) {
   const music = useAmbientMusic(invite.music);
   const [revealed, setRevealed] = useState(false);
   const [gateGone, setGateGone] = useState(false);
+  // If the filmed opening can't load, fall back to the 3D envelope.
+  const [videoFailed, setVideoFailed] = useState(false);
+  const dateLine = `${formatDayNum(invite.weddingDate)} · ${formatMonthShort(invite.weddingDate)} · ${formatYear(invite.weddingDate)}`;
+  const useVideo = invite.entry === "video" && invite.openingVideo && !videoFailed;
   const lenis = useLenis();
   const initials: [string, string] = [invite.partner1.first[0], invite.partner2.first[0]];
   const names = `${invite.partner1.first} & ${invite.partner2.first}`;
@@ -66,7 +71,18 @@ export function InviteExperience({ invite }: { invite: Invite }) {
 
   return (
     <main className="relative">
-      {invite.entry === "gate" ? (
+      {useVideo ? (
+        <VideoIntro
+          guest={guest}
+          names={names}
+          dateLine={dateLine}
+          video={invite.openingVideo!}
+          onOpenStart={music.play}
+          onReveal={() => setRevealed(true)}
+          onDone={() => setGateGone(true)}
+          onFail={() => setVideoFailed(true)}
+        />
+      ) : invite.entry === "gate" ? (
         <GateIntro
           guest={guest}
           initials={initials}
@@ -81,7 +97,7 @@ export function InviteExperience({ invite }: { invite: Invite }) {
           guest={guest}
           initials={initials}
           names={names}
-          dateLine={`${formatDayNum(invite.weddingDate)} · ${formatMonthShort(invite.weddingDate)} · ${formatYear(invite.weddingDate)}`}
+          dateLine={dateLine}
           onOpenStart={music.play}
           onReveal={() => setRevealed(true)}
           onDone={() => setGateGone(true)}
