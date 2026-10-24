@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# packaged deliverable
+niman-website.zip
+
+# local editor/preview config
+.claude

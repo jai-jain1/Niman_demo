@@ -1,26 +1,175 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ------------------------------------------------------------------
+   Niman design tokens
+   Kumkum maroon, temple gold, ivory paper and a moonlit night blue.
+------------------------------------------------------------------- */
+@theme {
+  --color-ivory: #fbf6ee;
+  --color-paper: #f6eee2;
+  --color-blush: #f7e7e3;
+  --color-sand: #eadcc6;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-maroon-50: #fbf1f2;
+  --color-maroon-100: #f3d9dd;
+  --color-maroon-300: #c56a7a;
+  --color-maroon-500: #8c1c2e;
+  --color-maroon-600: #7a1527;
+  --color-maroon-700: #5f0f1e;
+  --color-maroon-900: #34070f;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-gold-100: #f8edd0;
+  --color-gold-200: #efd9a0;
+  --color-gold-300: #e3c27a;
+  --color-gold-400: #d4ab5a;
+  --color-gold-500: #c49a45;
+  --color-gold-600: #a37b2e;
+  --color-gold-700: #7c5b1f;
+
+  --color-night-500: #1f3470;
+  --color-night-700: #13234f;
+  --color-night-900: #070e24;
+
+  --color-marigold: #f2a007;
+  --color-rose: #d9486b;
+  --color-henna: #56702a;
+  --color-haldi: #e7b10f;
+  --color-ink: #2a1418;
+
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-display: var(--font-cinzel), "Cinzel", Georgia, serif;
+  --font-script: var(--font-pinyon), "Pinyon Script", cursive;
+  --font-hindi: var(--font-tiro), "Tiro Devanagari Hindi", serif;
+  --font-sans: var(--font-manrope), "Manrope", system-ui, sans-serif;
+
+  --ease-royal: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-silk: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --animate-shimmer: shimmer 3.2s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.4s var(--ease-royal) infinite;
+  --animate-spin-slow: spin 14s linear infinite;
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes shimmer {
+    from { background-position: 200% 50%; }
+    to { background-position: -200% 50%; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes pulse-ring {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
 }
 
+:root {
+  color-scheme: light;
+  --gold-foil: linear-gradient(
+    110deg,
+    #9a7428 0%,
+    #e9cf87 22%,
+    #c49a45 40%,
+    #fff1c7 52%,
+    #b88a37 66%,
+    #e3c27a 82%,
+    #8f6a22 100%
+  );
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-maroon-500);
+  color: var(--color-gold-100);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold-500);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- Reusable flourishes ---------- */
+@utility text-foil {
+  background: var(--gold-foil);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-foil-animated {
+  background: var(--gold-foil);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: var(--animate-shimmer);
+}
+
+/* Deeper foil for ivory/paper backgrounds where the bright foil washes out. */
+@utility text-foil-deep {
+  background: linear-gradient(110deg, #6b4a14 0%, #b8892f 28%, #7c5b1f 48%, #d2a54e 64%, #8a6420 82%, #5f4110 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility bg-foil {
+  background: var(--gold-foil);
+  background-size: 200% 100%;
+}
+
+@utility eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+@utility paper-grain {
+  background-image:
+    radial-gradient(rgba(124, 91, 31, 0.06) 1px, transparent 1px),
+    radial-gradient(rgba(140, 28, 46, 0.035) 1px, transparent 1px);
+  background-size: 22px 22px, 37px 37px;
+  background-position: 0 0, 11px 17px;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+@utility safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
