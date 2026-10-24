@@ -5,7 +5,9 @@ import dynamic from "next/dynamic";
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { WaxSeal } from "@/components/ornaments";
+import type { IntroArt } from "@/content/invites/types";
 import { seeded } from "@/lib/invite-utils";
+import { CinematicGate } from "./cinematic-gate";
 
 const GoldDust = dynamic(() => import("@/components/three/gold-dust"), { ssr: false });
 
@@ -320,7 +322,7 @@ function ArchFrame() {
 /* ------------------------------------------------------------------ */
 /*  Preloader                                                           */
 /* ------------------------------------------------------------------ */
-function Preloader({ names }: { names: string }) {
+export function Preloader({ names }: { names: string }) {
   return (
     <motion.div
       key="preload"
@@ -403,6 +405,124 @@ function Preloader({ names }: { names: string }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Seal (shared by both entries)                                       */
+/* ------------------------------------------------------------------ */
+export function SealButton({
+  ref,
+  initials,
+  shown,
+  ready,
+  opening,
+  appearDelay,
+  onClick,
+}: {
+  ref?: React.Ref<HTMLButtonElement>;
+  initials: [string, string];
+  shown: boolean;
+  ready: boolean;
+  opening: boolean;
+  appearDelay: number;
+  onClick: () => void;
+}) {
+  return (
+    <motion.button
+      ref={ref}
+      type="button"
+      onClick={onClick}
+      disabled={!ready}
+      className="pointer-events-auto relative grid size-36 place-items-center outline-none"
+      aria-label="Tap the seal to open the invitation"
+      initial={{ scale: 0, opacity: 0 }}
+      animate={shown ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+      transition={{ type: "spring", stiffness: 140, damping: 13, delay: shown && ready ? appearDelay : 0 }}
+      whileHover={ready ? { scale: 1.06 } : undefined}
+      whileTap={ready ? { scale: 0.93 } : undefined}
+    >
+      {ready && (
+        <>
+          <span className="absolute size-36 rounded-full border border-gold-200/80 animate-pulse-ring" />
+          <span className="absolute size-36 rounded-full border border-gold-200/60 animate-pulse-ring [animation-delay:1.2s]" />
+        </>
+      )}
+      <motion.svg
+        viewBox="0 0 240 120"
+        className="absolute w-64"
+        aria-hidden
+        animate={opening ? { opacity: 0, scale: 0.6 } : { opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+      >
+        <defs>
+          <linearGradient id="bow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#fffaf3" />
+            <stop offset=".5" stopColor="#ecdcc8" />
+            <stop offset="1" stopColor="#d4bc9f" />
+          </linearGradient>
+        </defs>
+        <path d="M120 60 C90 20 40 10 30 40 C24 62 70 76 120 60Z" fill="url(#bow)" stroke="#c9ad8b" strokeWidth=".8" />
+        <path d="M120 60 C150 20 200 10 210 40 C216 62 170 76 120 60Z" fill="url(#bow)" stroke="#c9ad8b" strokeWidth=".8" />
+        <path d="M112 64 L86 118 L100 112 L108 120 L120 66Z" fill="url(#bow)" stroke="#c9ad8b" strokeWidth=".8" />
+        <path d="M128 64 L154 118 L140 112 L132 120 L120 66Z" fill="url(#bow)" stroke="#c9ad8b" strokeWidth=".8" />
+      </motion.svg>
+      {/* seal cracks into two halves */}
+      {(["l", "r"] as const).map((h) => (
+        <motion.span
+          key={h}
+          className="absolute size-32"
+          style={{ clipPath: h === "l" ? "polygon(0 0,52% 0,46% 30%,54% 55%,47% 78%,52% 100%,0 100%)" : "polygon(52% 0,100% 0,100% 100%,52% 100%,47% 78%,54% 55%,46% 30%)" }}
+          animate={opening ? { x: h === "l" ? -70 : 70, y: 60, rotate: h === "l" ? -35 : 35, opacity: 0 } : { x: 0, y: 0, rotate: 0, opacity: 1 }}
+          transition={{ duration: 0.9, ease: "easeIn" }}
+        >
+          <WaxSeal a={initials[0]} b={initials[1]} className="size-full drop-shadow-2xl" />
+        </motion.span>
+      ))}
+    </motion.button>
+  );
+}
+
+/** Gold shards and wax crumbs bursting from the seal. */
+export function burstFromSeal(el: HTMLElement | null) {
+  const r = el?.getBoundingClientRect();
+  if (!r) return;
+  const origin = { x: (r.left + r.width / 2) / window.innerWidth, y: (r.top + r.height / 2) / window.innerHeight };
+  confetti({ particleCount: 80, spread: 360, startVelocity: 24, gravity: 0.9, ticks: 160, scalar: 0.8, shapes: ["square"], colors: ["#f3dc9a", "#d4ab5a", "#fff1c7", "#a37b2e"], origin, zIndex: 80 });
+  confetti({ particleCount: 24, spread: 360, startVelocity: 14, gravity: 1.2, ticks: 120, scalar: 1.1, shapes: ["circle"], colors: ["#8c1c2e", "#b02a3e"], origin, zIndex: 80 });
+}
+
+/** Checks whether the rendered intro artwork (still + video) is actually available. */
+function useArtStatus(art?: IntroArt) {
+  const [status, setStatus] = useState<"checking" | "ready" | "missing">("checking");
+  useEffect(() => {
+    if (!art) return;
+    let settled = false;
+    let pending = 2;
+    const finish = (ok: boolean) => {
+      if (settled) return;
+      if (!ok || --pending === 0) {
+        settled = true;
+        setStatus(ok ? "ready" : "missing");
+      }
+    };
+    const img = new Image();
+    img.onload = () => finish(true);
+    img.onerror = () => finish(false);
+    img.src = art.gateImage;
+    const video = document.createElement("video");
+    video.muted = true;
+    video.preload = "auto";
+    video.onloadeddata = () => finish(true);
+    video.onerror = () => finish(false);
+    video.src = art.gateVideo;
+    const timeout = setTimeout(() => finish(false), 6000);
+    return () => {
+      settled = true;
+      clearTimeout(timeout);
+      video.removeAttribute("src");
+    };
+  }, [art]);
+  return art ? status : "missing";
+}
+
+/* ------------------------------------------------------------------ */
 /*  Velvet curtain                                                      */
 /* ------------------------------------------------------------------ */
 function Curtain({ side, stage, px, openPx }: { side: "left" | "right"; stage: Stage; px: MotionValue<number>; openPx: number }) {
@@ -442,6 +562,7 @@ export function GateIntro({
   guest,
   initials,
   names,
+  art,
   onOpenStart,
   onReveal,
   onDone,
@@ -449,13 +570,19 @@ export function GateIntro({
   guest: string | null;
   initials: [string, string];
   names: string;
+  /** Rendered artwork; when the files exist the video entry replaces the illustrated gate. */
+  art?: IntroArt;
   /** Fires on the tap itself — start music here (needs the user gesture). */
   onOpenStart: () => void;
   /** Fires as the camera passes through the doors. */
   onReveal: () => void;
   onDone: () => void;
 }) {
-  const [stage, setStage] = useState<Stage>("preload");
+  const [phase, setPhase] = useState<Stage>("preload");
+  const [minDone, setMinDone] = useState(false);
+  const artStatus = useArtStatus(art);
+  // The preloader stays up for its full sequence and until we know which entry to show.
+  const stage: Stage = phase === "preload" && minDone && artStatus !== "checking" ? "gate" : phase;
   const sealRef = useRef<HTMLButtonElement>(null);
 
   // How far each curtain draws back: on phones a slim edge stays visible; on
@@ -476,7 +603,7 @@ export function GateIntro({
   // Preloader → gate
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const t = setTimeout(() => setStage((s) => (s === "preload" ? "gate" : s)), reduce ? 600 : 3300);
+    const t = setTimeout(() => setMinDone(true), reduce ? 600 : 3300);
     return () => clearTimeout(t);
   }, []);
 
@@ -509,18 +636,12 @@ export function GateIntro({
 
   const open = () => {
     if (stage !== "gate") return;
-    setStage("opening");
+    setPhase("opening");
     onOpenStart();
-
-    const r = sealRef.current?.getBoundingClientRect();
-    if (r) {
-      const origin = { x: (r.left + r.width / 2) / window.innerWidth, y: (r.top + r.height / 2) / window.innerHeight };
-      confetti({ particleCount: 80, spread: 360, startVelocity: 24, gravity: 0.9, ticks: 160, scalar: 0.8, shapes: ["square"], colors: ["#f3dc9a", "#d4ab5a", "#fff1c7", "#a37b2e"], origin, zIndex: 80 });
-      confetti({ particleCount: 24, spread: 360, startVelocity: 14, gravity: 1.2, ticks: 120, scalar: 1.1, shapes: ["circle"], colors: ["#8c1c2e", "#b02a3e"], origin, zIndex: 80 });
-    }
+    burstFromSeal(sealRef.current);
     setTimeout(onReveal, 2300);
     setTimeout(() => {
-      setStage("gone");
+      setPhase("gone");
       onDone();
     }, 3500);
   };
@@ -528,12 +649,16 @@ export function GateIntro({
   const skip = () => {
     onOpenStart();
     onReveal();
-    setStage("gone");
+    setPhase("gone");
     onDone();
   };
 
   const opening = stage === "opening";
   const ready = stage === "gate";
+
+  if (artStatus === "ready" && art && stage !== "preload") {
+    return <CinematicGate guest={guest} initials={initials} names={names} art={art} onOpenStart={onOpenStart} onReveal={onReveal} onDone={onDone} />;
+  }
 
   return (
     <AnimatePresence>
@@ -620,57 +745,15 @@ export function GateIntro({
                 </motion.div>
 
                 <div className="absolute top-[51.25%] left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <motion.button
+                  <SealButton
                     ref={sealRef}
-                    type="button"
+                    initials={initials}
+                    shown={stage !== "preload"}
+                    ready={ready}
+                    opening={opening}
+                    appearDelay={1.9}
                     onClick={open}
-                    disabled={!ready}
-                    className="pointer-events-auto relative grid size-36 place-items-center outline-none"
-                    aria-label="Tap the seal to open the invitation"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={stage === "preload" ? { scale: 0, opacity: 0 } : { scale: 1, opacity: 1 }}
-                    transition={{ type: "spring", stiffness: 140, damping: 13, delay: stage === "gate" ? 1.9 : 0 }}
-                    whileHover={ready ? { scale: 1.06 } : undefined}
-                    whileTap={ready ? { scale: 0.93 } : undefined}
-                  >
-                    {ready && (
-                      <>
-                        <span className="absolute size-36 rounded-full border border-gold-200/80 animate-pulse-ring" />
-                        <span className="absolute size-36 rounded-full border border-gold-200/60 animate-pulse-ring [animation-delay:1.2s]" />
-                      </>
-                    )}
-                    <motion.svg
-                      viewBox="0 0 240 120"
-                      className="absolute w-64"
-                      aria-hidden
-                      animate={opening ? { opacity: 0, scale: 0.6 } : { opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.4 }}
-                    >
-                      <defs>
-                        <linearGradient id="bow" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0" stopColor="#fffaf3" />
-                          <stop offset=".5" stopColor="#ecdcc8" />
-                          <stop offset="1" stopColor="#d4bc9f" />
-                        </linearGradient>
-                      </defs>
-                      <path d="M120 60 C90 20 40 10 30 40 C24 62 70 76 120 60Z" fill="url(#bow)" stroke="#c9ad8b" strokeWidth=".8" />
-                      <path d="M120 60 C150 20 200 10 210 40 C216 62 170 76 120 60Z" fill="url(#bow)" stroke="#c9ad8b" strokeWidth=".8" />
-                      <path d="M112 64 L86 118 L100 112 L108 120 L120 66Z" fill="url(#bow)" stroke="#c9ad8b" strokeWidth=".8" />
-                      <path d="M128 64 L154 118 L140 112 L132 120 L120 66Z" fill="url(#bow)" stroke="#c9ad8b" strokeWidth=".8" />
-                    </motion.svg>
-                    {/* seal cracks into two halves */}
-                    {(["l", "r"] as const).map((h) => (
-                      <motion.span
-                        key={h}
-                        className="absolute size-32"
-                        style={{ clipPath: h === "l" ? "polygon(0 0,52% 0,46% 30%,54% 55%,47% 78%,52% 100%,0 100%)" : "polygon(52% 0,100% 0,100% 100%,52% 100%,47% 78%,54% 55%,46% 30%)" }}
-                        animate={opening ? { x: h === "l" ? -70 : 70, y: 60, rotate: h === "l" ? -35 : 35, opacity: 0 } : { x: 0, y: 0, rotate: 0, opacity: 1 }}
-                        transition={{ duration: 0.9, ease: "easeIn" }}
-                      >
-                        <WaxSeal a={initials[0]} b={initials[1]} className="size-full drop-shadow-2xl" />
-                      </motion.span>
-                    ))}
-                  </motion.button>
+                  />
                 </div>
 
                 <motion.p

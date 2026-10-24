@@ -66,6 +66,23 @@ export type Invite = {
    * fall back to a gentle synthesised tanpura.
    */
   music?: { entry?: SongClip; background?: SongClip };
+  /** Rendered artwork for the cinematic entry. Missing files fall back to the illustrated gate. */
+  intro?: IntroArt;
+};
+
+export type IntroArt = {
+  /** 9:16 video of the gates opening and the camera moving through (H.264 MP4, no audio). */
+  gateVideo: string;
+  /** First frame of the video — shown until the seal is tapped. */
+  gateImage: string;
+  /** Last frame of the video — becomes the hero background, so the handoff is seamless. */
+  palaceImage: string;
+  /** Optional 16:9 palace for desktop hero. */
+  palaceImageWide?: string;
+  /** Optional transparent PNG foreground layers for depth. */
+  garland?: string;
+  floralsLeft?: string;
+  floralsRight?: string;
 };
 
 export type SongClip = {

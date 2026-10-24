@@ -168,6 +168,16 @@ export const arjunWedsMeera: Invite = {
     // Add background.mp3 and point this at it to use a different song.
     background: { src: "/invites/arjun-weds-meera/entry.mp3", title: "Aaj Sajeya · Goldie Sohel", volume: 0.6 },
   },
+  intro: {
+    // Generate these with the prompts in ART-PROMPTS.md and drop them in this folder.
+    gateVideo: "/invites/arjun-weds-meera/intro/gate-open.mp4",
+    gateImage: "/invites/arjun-weds-meera/intro/gate-closed.jpg",
+    palaceImage: "/invites/arjun-weds-meera/intro/palace-night.jpg",
+    palaceImageWide: "/invites/arjun-weds-meera/intro/palace-night-wide.jpg",
+    garland: "/invites/arjun-weds-meera/intro/garland-top.png",
+    floralsLeft: "/invites/arjun-weds-meera/intro/florals-left.png",
+    floralsRight: "/invites/arjun-weds-meera/intro/florals-right.png",
+  },
   thankYou:
     "for being a part of our journey, from Mumbai to Udaipur. Your love and blessings mean the world to us.",
 };

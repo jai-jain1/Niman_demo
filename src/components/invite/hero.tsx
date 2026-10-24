@@ -2,14 +2,60 @@
 
 import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
-import type { Invite } from "@/content/invites/types";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import type { IntroArt, Invite } from "@/content/invites/types";
 import { formatDayNum, formatMonthShort, formatYear } from "@/lib/invite-utils";
 import { PalaceScene } from "./palace-scene";
 
 const SkyLanterns = dynamic(() => import("@/components/three/sky-lanterns"), { ssr: false });
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+/** Loads an image in JS so a missing file is detected reliably (no hydration race). */
+function useImageStatus(src?: string) {
+  const [status, setStatus] = useState<{ src?: string; ok: boolean } | null>(null);
+  useEffect(() => {
+    if (!src) return;
+    const img = new Image();
+    img.onload = () => setStatus({ src, ok: true });
+    img.onerror = () => setStatus({ src, ok: false });
+    img.src = src;
+    return () => {
+      img.onload = img.onerror = null;
+    };
+  }, [src]);
+  if (!src) return "missing";
+  return status?.src !== src ? "checking" : status.ok ? "ok" : "missing";
+}
+
+const LANDSCAPE = "(min-aspect-ratio: 1/1)";
+function useLandscape() {
+  return useSyncExternalStore(
+    (cb) => {
+      const mq = window.matchMedia(LANDSCAPE);
+      mq.addEventListener("change", cb);
+      return () => mq.removeEventListener("change", cb);
+    },
+    () => window.matchMedia(LANDSCAPE).matches,
+    () => false,
+  );
+}
+
+/**
+ * The palace artwork (the gate video's last frame), the wide variant on
+ * landscape screens, or the drawn palace when the artwork is missing.
+ */
+function HeroBackdrop({ art }: { art?: IntroArt }) {
+  const portrait = useImageStatus(art?.palaceImage);
+  const wide = useImageStatus(art?.palaceImageWide);
+  const landscape = useLandscape();
+  if (!art || portrait === "missing") return <PalaceScene className="h-full w-full" />;
+  // The gate covers the hero while this resolves, so a plain night sky is enough.
+  if (portrait === "checking") return <div className="h-full w-full bg-night-900" />;
+  const src = landscape && wide === "ok" ? art.palaceImageWide : art.palaceImage;
+  // eslint-disable-next-line @next/next/no-img-element -- client-chosen local artwork
+  return <img src={src} alt="" className="h-full w-full object-cover" />;
+}
 
 export function Hero({ invite, revealed }: { invite: Invite; revealed: boolean }) {
   const ref = useRef<HTMLElement>(null);
@@ -30,9 +76,9 @@ export function Hero({ invite, revealed }: { invite: Invite; revealed: boolean }
   return (
     <section ref={ref} id="home" className="relative h-[100svh] min-h-[560px] overflow-hidden bg-night-900">
       <motion.div className="absolute inset-0 will-change-transform" style={{ scale: sceneScale, y: sceneY }}>
-        <PalaceScene className="h-full w-full" />
+        <HeroBackdrop art={invite.intro} />
       </motion.div>
-      <SkyLanterns />
+      <SkyLanterns count={invite.intro ? 16 : 26} />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_38%_at_50%_44%,rgba(5,10,30,.7),transparent_75%)]" />
 
       <motion.div

@@ -66,6 +66,7 @@ export function InviteExperience({ invite }: { invite: Invite }) {
         guest={guest}
         initials={[invite.partner1.first[0], invite.partner2.first[0]]}
         names={`${invite.partner1.first} & ${invite.partner2.first}`}
+        art={invite.intro}
         onOpenStart={music.play}
         onReveal={() => setRevealed(true)}
         onDone={() => setGateGone(true)}

@@ -47,6 +47,10 @@ music: {
 - If a file is missing, a synthesised tanpura + santoor plays instead, so the invite is never silent.
 - Use songs you have the rights to use. Bollywood tracks are copyrighted, so for paid client work use the couple's own licensed copy or a licensed/royalty-free track.
 
+## Cinematic entry artwork
+
+The entry can play a rendered gate-opening video instead of the illustrated gate. Prompts, file names and sizes are in [ART-PROMPTS.md](ART-PROMPTS.md). Files go in `public/invites/<slug>/intro/`, and until they exist the illustrated gate is used automatically.
+
 ## Story photos
 
 Each chapter in `story.chapters` can take `photo: "/invites/<slug>/story-1.jpg"` (landscape, ~1200×800). Without a photo, an illustrated postcard scene is drawn instead.
