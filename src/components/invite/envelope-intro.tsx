@@ -30,11 +30,27 @@ type Vars = React.CSSProperties & Record<`--emb-${string}`, string>;
  * offset up-left and the paper-coloured face with fine engraved lines — which
  * reads as paper pressed up from behind.
  */
-function Emboss({ viewBox, className, style, children }: { viewBox: string; className?: string; style?: React.CSSProperties; children: React.ReactNode }) {
+export type EmbossPalette = { paper: string; shadow: string; highlight: string; detail: string };
+const ENVELOPE_PALETTE: EmbossPalette = { paper: PAPER, shadow: SHADOW, highlight: HIGHLIGHT, detail: DETAIL };
+
+export function Emboss({
+  viewBox,
+  className,
+  style,
+  palette = ENVELOPE_PALETTE,
+  children,
+}: {
+  viewBox: string;
+  className?: string;
+  style?: React.CSSProperties;
+  palette?: EmbossPalette;
+  children: React.ReactNode;
+}) {
   const id = useId().replace(/[^a-zA-Z0-9]/g, "");
-  const shadow: Vars = { fill: SHADOW, "--emb-detail": "transparent", "--emb-stem": SHADOW, "--emb-gold": SHADOW };
-  const light: Vars = { fill: HIGHLIGHT, "--emb-detail": "transparent", "--emb-stem": HIGHLIGHT, "--emb-gold": HIGHLIGHT };
-  const face: Vars = { fill: PAPER, "--emb-detail": DETAIL, "--emb-stem": PAPER, "--emb-gold": `url(#${id}-foil)` };
+  const { paper, shadow: sh, highlight: hl, detail } = palette;
+  const shadow: Vars = { fill: sh, "--emb-detail": "transparent", "--emb-stem": sh, "--emb-gold": sh };
+  const light: Vars = { fill: hl, "--emb-detail": "transparent", "--emb-stem": hl, "--emb-gold": hl };
+  const face: Vars = { fill: paper, "--emb-detail": detail, "--emb-stem": paper, "--emb-gold": `url(#${id}-foil)` };
   return (
     <svg viewBox={viewBox} className={`emb pointer-events-none absolute ${className ?? ""}`} style={style} aria-hidden>
       <defs>
@@ -121,7 +137,7 @@ function Bud({ x, y, r, len = 9 }: { x: number; y: number; r: number; len?: numb
 const mirror = (W: number) => (l: { x: number; y: number; r: number; len?: number; w?: number; gold?: boolean }) => ({ ...l, x: W - l.x, r: -l.r });
 
 /** Bouquet on the top flap: wide at the top, tapering toward the seal. */
-function BouquetTop() {
+export function BouquetTop() {
   const leaves = [
     { x: 100, y: 70, r: -70, len: 20 },
     { x: 92, y: 74, r: -125, len: 18 },
@@ -167,7 +183,7 @@ function BouquetTop() {
 }
 
 /** Bouquet on the bottom flap: fans outward and up toward the seal. */
-function BouquetBottom() {
+export function BouquetBottom() {
   const leaves = [
     { x: 98, y: 98, r: -75, len: 20 },
     { x: 88, y: 104, r: -120, len: 19, gold: true },

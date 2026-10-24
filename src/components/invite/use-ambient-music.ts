@@ -212,8 +212,17 @@ export function useAmbientMusic(music?: { entry?: SongClip; background?: SongCli
     current.current = "entry";
     setNowPlaying(t.clip.title ?? null);
     const start = t.clip.start ?? 0;
-    const end = start + (t.clip.duration ?? 55);
     t.el.currentTime = start;
+    if (t.clip.loop) {
+      t.el.loop = true;
+      t.el.onerror = () => current.current === "entry" && startSynth();
+      t.el.play().then(
+        () => ramp(g, t.clip.volume ?? 0.9, 1.2),
+        () => startSynth(),
+      );
+      return;
+    }
+    const end = start + (t.clip.duration ?? 55);
     let handedOff = false;
     const handOff = () => {
       if (handedOff) return;
@@ -230,7 +239,7 @@ export function useAmbientMusic(music?: { entry?: SongClip; background?: SongCli
       () => ramp(g, t.clip.volume ?? 0.9, 1.2),
       () => playBackground(1.5),
     );
-  }, [playBackground]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [playBackground, startSynth]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const play = useCallback(() => {
     ensureCtx();

@@ -163,18 +163,17 @@ export const arjunWedsMeera: Invite = {
   },
   music: {
     // Drop your licensed MP3s at these paths (see README → Music).
-    entry: { src: "/invites/arjun-weds-meera/entry.mp3", title: "Aaj Sajeya · Goldie Sohel", start: 0, duration: 55 },
-    // No separate background track yet, so the entry song keeps playing on loop.
-    // Add background.mp3 and point this at it to use a different song.
-    background: { src: "/invites/arjun-weds-meera/entry.mp3", title: "Aaj Sajeya · Goldie Sohel", volume: 0.6 },
+    // Plays from the seal tap and loops for the whole visit.
+    entry: { src: "/invites/arjun-weds-meera/entry.mp3", title: "Aaj Sajeya · Goldie Sohel", loop: true },
   },
   entry: "video",
   theme: "pearl",
   openingVideo: {
     src: "/invites/arjun-weds-meera/opening/opening.mp4",
     poster: "/invites/arjun-weds-meera/opening/poster.jpg",
+    finalFrame: "/invites/arjun-weds-meera/opening/final-card.jpg",
     seal: { x: 0.497, y: 0.49 },
-    card: { x: 0.5, y: 0.545, w: 0.5 },
+    card: { x: 0.5, y: 0.545, w: 0.58, h: 0.49 },
   },
   intro: {
     // Used when entry is "gate". Generate these with the prompts in ART-PROMPTS.md and drop them in this folder.

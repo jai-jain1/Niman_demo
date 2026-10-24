@@ -71,7 +71,7 @@ function ScratchHeart({ invite, onReveal }: { invite: Invite; onReveal: () => vo
       g.lineTo(p.x, p.y);
       g.stroke();
       last = p;
-      if (++moves % 12 === 0) check();
+      if (++moves % 4 === 0) check();
     };
     const check = () => {
       const data = g.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -81,7 +81,7 @@ function ScratchHeart({ invite, onReveal }: { invite: Invite; onReveal: () => vo
         total++;
         if (data[i] < 40) clear++;
       }
-      if (!finished && clear / total > 0.48) {
+      if (!finished && clear / total > 0.14) {
         finished = true;
         setDone(true);
         revealRef.current();

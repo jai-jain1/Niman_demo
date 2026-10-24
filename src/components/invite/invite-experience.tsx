@@ -12,6 +12,7 @@ import { GateIntro } from "./gate-intro";
 import { Hero } from "./hero";
 import { Invocation } from "./invocation";
 import { InviteTheme } from "./linen";
+import { CardHero } from "./card-hero";
 import { PearlHero } from "./pearl-hero";
 import { Journey } from "./journey";
 import { PetalShower } from "./petal-shower";
@@ -20,7 +21,7 @@ import { SaveTheDate } from "./save-the-date";
 import { Story } from "./story";
 import { ThankYou } from "./thank-you";
 import { useAmbientMusic } from "./use-ambient-music";
-import { Family, TravelFaq, Venue } from "./venue-family";
+import { Family, Venue } from "./venue-family";
 
 const noopSubscribe = () => () => {};
 
@@ -84,8 +85,10 @@ export function InviteExperience({ invite }: { invite: Invite }) {
       {useVideo ? (
         <VideoIntro
           guest={guest}
-          names={names}
+          partner1={invite.partner1.first}
+          partner2={invite.partner2.first}
           dateLine={dateLine}
+          city={invite.venue.city}
           video={invite.openingVideo!}
           onOpenStart={music.play}
           onReveal={() => setRevealed(true)}
@@ -115,7 +118,13 @@ export function InviteExperience({ invite }: { invite: Invite }) {
       )}
       <PetalShower active={revealed} colors={theme === "pearl" ? PEARL_PETALS : undefined} />
 
-      {theme === "pearl" ? <PearlHero invite={invite} revealed={revealed} /> : <Hero invite={invite} revealed={revealed} />}
+      {theme === "pearl" && invite.openingVideo ? (
+        <CardHero invite={invite} video={invite.openingVideo} dateLine={dateLine} revealed={revealed} />
+      ) : theme === "pearl" ? (
+        <PearlHero invite={invite} revealed={revealed} />
+      ) : (
+        <Hero invite={invite} revealed={revealed} />
+      )}
       <Invocation invite={invite} />
       <SaveTheDate invite={invite} />
       <Story invite={invite} />
@@ -123,7 +132,6 @@ export function InviteExperience({ invite }: { invite: Invite }) {
       <Events invite={invite} />
       <Venue invite={invite} />
       <Family invite={invite} />
-      <TravelFaq invite={invite} />
       <Rsvp invite={invite} guest={guest} />
       <ThankYou invite={invite} />
 

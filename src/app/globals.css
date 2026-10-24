@@ -172,6 +172,9 @@ html.theme-pearl body { background: #f6f2ec; }
 
 /* ---------- Reusable flourishes ---------- */
 @utility text-foil {
+  /* own layer: stops gradient text flickering on mobile while it animates */
+  transform: translateZ(0);
+  backface-visibility: hidden;
   background: var(--gold-foil);
   background-size: 200% 100%;
   -webkit-background-clip: text;
@@ -180,6 +183,9 @@ html.theme-pearl body { background: #f6f2ec; }
 }
 
 @utility text-foil-animated {
+  /* own layer: stops gradient text flickering on mobile while it animates */
+  transform: translateZ(0);
+  backface-visibility: hidden;
   background: var(--gold-foil);
   background-size: 200% 100%;
   -webkit-background-clip: text;
@@ -190,6 +196,9 @@ html.theme-pearl body { background: #f6f2ec; }
 
 /* Deeper foil for ivory/paper backgrounds where the bright foil washes out. */
 @utility text-foil-deep {
+  /* own layer: stops gradient text flickering on mobile while it animates */
+  transform: translateZ(0);
+  backface-visibility: hidden;
   background: var(--gold-foil-deep);
   -webkit-background-clip: text;
   background-clip: text;

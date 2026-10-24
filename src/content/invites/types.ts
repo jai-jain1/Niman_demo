@@ -85,8 +85,10 @@ export type OpeningVideo = {
   poster: string;
   /** Where the wax seal sits in the frame (0–1), used as the tap target. */
   seal: { x: number; y: number };
-  /** Centre and width (0–1) of the blank card the clip ends on, where the names are written. */
-  card: { x: number; y: number; w: number };
+  /** The clip's last frame — the first slide zooms into it, so the hand-off is seamless. */
+  finalFrame: string;
+  /** Centre and size (0–1) of the blank card the clip ends on, where the names are written. */
+  card: { x: number; y: number; w: number; h: number };
 };
 
 export type IntroArt = {
@@ -113,4 +115,6 @@ export type SongClip = {
   /** Seconds to play before fading out (entry clips). */
   duration?: number;
   volume?: number;
+  /** Loop this clip continuously instead of handing off to the background song. */
+  loop?: boolean;
 };

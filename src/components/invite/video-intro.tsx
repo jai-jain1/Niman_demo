@@ -4,19 +4,22 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import type { OpeningVideo } from "@/content/invites/types";
 import { LINEN, LinenBackdrop } from "./linen";
+import { CardText, OPENING_ZOOM, OpeningFrame } from "./opening-scene";
 
-const royal = [0.22, 1, 0.36, 1] as const;
 const noopSubscribe = () => () => {};
 
 /**
  * Opening built on a filmed envelope: the first frame waits for a tap on the
- * seal, the clip plays, and the couple's names are written onto the blank
- * card it ends on before the invite opens into the palace.
+ * seal, the clip plays, the couple's details are written onto the blank card
+ * it ends on, and the camera moves in to the card — which is exactly how the
+ * first slide is framed, so the hand-off is invisible.
  */
 export function VideoIntro({
   guest,
-  names,
+  partner1,
+  partner2,
   dateLine,
+  city,
   video,
   onOpenStart,
   onReveal,
@@ -24,8 +27,10 @@ export function VideoIntro({
   onFail,
 }: {
   guest: string | null;
-  names: string;
+  partner1: string;
+  partner2: string;
   dateLine: string;
+  city: string;
   video: OpeningVideo;
   onOpenStart: () => void;
   onReveal: () => void;
@@ -57,7 +62,7 @@ export function VideoIntro({
     if (atCard.current) return;
     atCard.current = true;
     setPhase("card");
-    setTimeout(leave, 2800);
+    setTimeout(leave, 3500);
   }, [leave]);
 
   const open = () => {
@@ -78,7 +83,8 @@ export function VideoIntro({
   };
 
   const closed = phase === "closed";
-  const { seal, card } = video;
+  const atCardPhase = phase === "card";
+  const { seal } = video;
 
   return (
     <AnimatePresence onExitComplete={finish}>
@@ -91,16 +97,14 @@ export function VideoIntro({
           role="dialog"
           aria-label="Invitation envelope"
         >
-          {/* the same linen the video is filmed on, so wide screens read as one continuous scene */}
           <LinenBackdrop />
 
-          {/* 9:16 frame: covers phones edge to edge; on wide screens it is full height and its
-              edges dissolve into the matching linen, so only the envelope stands out */}
-          <motion.div
-            className="relative h-[max(100dvh,177.78vw)] w-[max(100vw,56.25dvh)] shrink-0 overflow-hidden md:h-dvh md:w-[56.25dvh] md:[mask-composite:intersect] md:[mask-image:linear-gradient(90deg,transparent,#000_11%,#000_89%,transparent),linear-gradient(transparent,#000_4%,#000_95%,transparent)]"
-            initial={{ opacity: 0, scale: 1.03 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.1, ease: royal }}
+          <OpeningFrame
+            initial={{ opacity: 0, scale: 1.02 }}
+            animate={{ opacity: 1, scale: atCardPhase ? OPENING_ZOOM : 1 }}
+            transition={
+              atCardPhase ? { scale: { duration: 2.8, delay: 0.5, ease: [0.45, 0, 0.2, 1] } } : { duration: 1.1, ease: [0.22, 1, 0.36, 1] }
+            }
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- first frame, shown instantly */}
             <img src={video.poster} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
@@ -118,7 +122,7 @@ export function VideoIntro({
                 onEnded={showCard}
                 onTimeUpdate={(e) => {
                   const v = e.currentTarget;
-                  if (v.duration && v.currentTime >= v.duration - 0.15) showCard();
+                  if (v.duration && v.currentTime >= v.duration - 0.12) showCard();
                 }}
               />
             )}
@@ -127,64 +131,26 @@ export function VideoIntro({
             <motion.div
               className="pointer-events-none absolute left-1/2 w-[62%] -translate-x-1/2 text-center"
               style={{ top: `${(seal.y - 0.26) * 100}%` }}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: closed ? 1 : 0, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: closed ? 1 : 0 }}
               transition={{ duration: closed ? 1.1 : 0.4, delay: closed ? 0.8 : 0 }}
             >
-              <p className="eyebrow text-[0.55rem] text-[#9c8466]">{guest ? "Specially for" : "You are invited"}</p>
-              <p className="text-foil-deep mt-1 font-script text-[clamp(1.9rem,8vw,2.6rem)] leading-tight">{guest ?? names}</p>
+              <p className="font-display text-[1.7cqw] tracking-[0.32em] text-[#9c8466] uppercase">{guest ? "Specially for" : "You are invited"}</p>
+              <p className="mt-[0.6cqw] font-script text-[7cqw] leading-tight text-[#6b4a35]">{guest ?? `${partner1} & ${partner2}`}</p>
             </motion.div>
 
-            {/* the names written onto the blank card the clip ends on */}
-            <motion.div
-              className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 text-center"
-              style={{ left: `${card.x * 100}%`, top: `${card.y * 100}%`, width: `${card.w * 100}%` }}
-              initial={{ opacity: 0 }}
-              animate={phase === "card" ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 1, ease: royal }}
-            >
-              <motion.p
-                className="font-hindi text-sm text-[#a08055]"
-                initial={{ y: 10, opacity: 0 }}
-                animate={phase === "card" ? { y: 0, opacity: 1 } : {}}
-                transition={{ duration: 0.9, delay: 0.1 }}
-              >
-                ॥ शुभ विवाह ॥
-              </motion.p>
-              <motion.p
-                className="text-foil-deep mt-3 font-script text-[clamp(2.4rem,10vw,3.4rem)] leading-[1.05]"
-                initial={{ y: 14, opacity: 0, filter: "blur(4px)" }}
-                animate={phase === "card" ? { y: 0, opacity: 1, filter: "blur(0px)" } : {}}
-                transition={{ duration: 1.1, delay: 0.3, ease: royal }}
-              >
-                {names}
-              </motion.p>
-              <motion.div
-                className="mx-auto my-4 h-px w-20 bg-gradient-to-r from-transparent via-[#c99a45] to-transparent"
-                initial={{ scaleX: 0 }}
-                animate={phase === "card" ? { scaleX: 1 } : {}}
-                transition={{ duration: 0.9, delay: 0.8 }}
-              />
-              <motion.p
-                className="eyebrow text-[0.58rem] text-[#8a7458]"
-                initial={{ opacity: 0 }}
-                animate={phase === "card" ? { opacity: 1 } : {}}
-                transition={{ duration: 0.9, delay: 1 }}
-              >
-                are getting married
-              </motion.p>
-              <motion.p
-                className="mt-2 font-display text-xs tracking-[0.3em] text-[#6b5536] uppercase"
-                initial={{ opacity: 0 }}
-                animate={phase === "card" ? { opacity: 1 } : {}}
-                transition={{ duration: 0.9, delay: 1.2 }}
-              >
-                {dateLine}
-              </motion.p>
-            </motion.div>
+            <CardText
+              card={video.card}
+              partner1={partner1}
+              partner2={partner2}
+              dateLine={dateLine}
+              city={city}
+              visible={atCardPhase}
+              animate
+            />
 
             <motion.p
-              className="eyebrow pointer-events-none absolute bottom-[max(1.6rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 text-[0.58rem] whitespace-nowrap text-[#8f7a60]"
+              className="pointer-events-none absolute bottom-[max(1.6rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 font-display text-[1.9cqw] tracking-[0.32em] whitespace-nowrap text-[#8f7a60] uppercase"
               animate={closed ? { opacity: [0.45, 1, 0.45] } : { opacity: 0 }}
               transition={closed ? { duration: 2.6, repeat: Infinity, delay: 1.4 } : { duration: 0.3 }}
             >
@@ -194,7 +160,7 @@ export function VideoIntro({
             {/* tap target over the wax seal, with a soft pulse to invite the tap */}
             {closed && (
               <span
-                className="pointer-events-none absolute aspect-square w-[22%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#c9a77a]/70 animate-pulse-ring"
+                className="pointer-events-none absolute aspect-square w-[22%] -translate-x-1/2 -translate-y-1/2 animate-pulse-ring rounded-full border border-[#c9a77a]/70"
                 style={{ left: `${seal.x * 100}%`, top: `${seal.y * 100}%` }}
               />
             )}
@@ -206,7 +172,7 @@ export function VideoIntro({
               className="absolute aspect-square w-[30%] -translate-x-1/2 -translate-y-1/2 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[#c99a45]"
               style={{ left: `${seal.x * 100}%`, top: `${seal.y * 100}%` }}
             />
-          </motion.div>
+          </OpeningFrame>
 
           {closed && (
             <button
