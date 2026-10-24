@@ -66,8 +66,8 @@ export function Hero({ invite, revealed }: { invite: Invite; revealed: boolean }
   const textOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   const show = (delay: number) => ({
-    initial: { opacity: 0, y: 30, filter: "blur(10px)" },
-    animate: revealed ? { opacity: 1, y: 0, filter: "blur(0px)" } : {},
+    initial: { opacity: 0, y: 30 },
+    animate: revealed ? { opacity: 1, y: 0 } : {},
     transition: { duration: 1.4, ease, delay },
   });
 
@@ -78,7 +78,7 @@ export function Hero({ invite, revealed }: { invite: Invite; revealed: boolean }
       <motion.div className="absolute inset-0 will-change-transform" style={{ scale: sceneScale, y: sceneY }}>
         <HeroBackdrop art={invite.intro} />
       </motion.div>
-      <SkyLanterns count={invite.intro ? 16 : 26} />
+      {revealed && <SkyLanterns count={invite.intro ? 16 : 22} />}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_38%_at_50%_44%,rgba(5,10,30,.7),transparent_75%)]" />
 
       <motion.div

@@ -7,7 +7,7 @@ import { Sparkles } from "@react-three/drei";
 export default function GoldDust() {
   return (
     <Canvas
-      dpr={[1, 1.5]}
+      dpr={[1, 1.25]}
       camera={{ position: [0, 0, 5], fov: 50 }}
       gl={{ alpha: true, antialias: false, powerPreference: "low-power" }}
       style={{ position: "absolute", inset: 0, pointerEvents: "none" }}

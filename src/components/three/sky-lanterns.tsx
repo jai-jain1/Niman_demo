@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Sparkles } from "@react-three/drei";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import * as THREE from "three";
 import { seeded } from "@/lib/invite-utils";
 
@@ -79,16 +79,33 @@ function Lanterns({ count }: { count: number }) {
   );
 }
 
+const subscribeNone = () => () => {};
+const isTouch = () => window.matchMedia("(pointer: coarse)").matches;
+
 export default function SkyLanterns({ count = 26 }: { count?: number }) {
+  const box = useRef<HTMLDivElement>(null);
+  const [onScreen, setOnScreen] = useState(true);
+  const touch = useSyncExternalStore(subscribeNone, isTouch, () => false);
+
+  // Stop rendering entirely once the hero scrolls out of view.
+  useEffect(() => {
+    const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting), { rootMargin: "100px" });
+    if (box.current) io.observe(box.current);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <Canvas
-      dpr={[1, 1.6]}
-      camera={{ position: [0, 0, 5], fov: 55 }}
-      gl={{ alpha: true, antialias: false, powerPreference: "low-power" }}
-      style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-    >
-      <Lanterns count={count} />
-      <Sparkles count={60} scale={[10, 6, 4]} size={2.2} speed={0.25} color="#ffe2a8" opacity={0.7} />
-    </Canvas>
+    <div ref={box} className="pointer-events-none absolute inset-0">
+      <Canvas
+        frameloop={onScreen ? "always" : "never"}
+        dpr={touch ? 1 : [1, 1.5]}
+        camera={{ position: [0, 0, 5], fov: 55 }}
+        gl={{ alpha: true, antialias: false, powerPreference: "low-power" }}
+        style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+      >
+        <Lanterns count={touch ? Math.round(count * 0.7) : count} />
+        <Sparkles count={touch ? 36 : 60} scale={[10, 6, 4]} size={2.2} speed={0.25} color="#ffe2a8" opacity={0.7} />
+      </Canvas>
+    </div>
   );
 }

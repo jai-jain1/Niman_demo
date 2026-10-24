@@ -26,7 +26,9 @@ export function PetalShower({ active, count = 90, duration = 7000 }: { active: b
 
     const w = () => window.innerWidth;
     const h = () => window.innerHeight;
-    const petals: Petal[] = Array.from({ length: count }, () => ({
+    // Fewer petals on phones and tablets keeps the reveal smooth.
+    const n = window.innerWidth < 1024 ? Math.round(count * 0.55) : count;
+    const petals: Petal[] = Array.from({ length: n }, () => ({
       x: Math.random() * w(),
       y: -20 - Math.random() * h() * 0.9,
       r: 5 + Math.random() * 7,

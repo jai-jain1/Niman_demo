@@ -47,9 +47,13 @@ music: {
 - If a file is missing, a synthesised tanpura + santoor plays instead, so the invite is never silent.
 - Use songs you have the rights to use. Bollywood tracks are copyrighted, so for paid client work use the couple's own licensed copy or a licensed/royalty-free track.
 
-## Cinematic entry artwork
+## Opening style
 
-The entry can play a rendered gate-opening video instead of the illustrated gate. Prompts, file names and sizes are in [ART-PROMPTS.md](ART-PROMPTS.md). Files go in `public/invites/<slug>/intro/`, and until they exist the illustrated gate is used automatically.
+`entry: "envelope"` (the default) opens with an embossed letterpress envelope and a real 3D wax seal (WebGL, gilded monogram, warm studio lighting that follows the phone's tilt). Tapping the seal cracks it, the four flaps unfold and a card rises into the palace hero. Set `entry: "gate"` for the palace-gate opening instead.
+
+## Cinematic entry artwork (gate opening)
+
+The gate entry can play a rendered gate-opening video instead of the illustrated gate. Prompts, file names and sizes are in [ART-PROMPTS.md](ART-PROMPTS.md). Files go in `public/invites/<slug>/intro/`, and until they exist the illustrated gate is used automatically.
 
 ## Story photos
 

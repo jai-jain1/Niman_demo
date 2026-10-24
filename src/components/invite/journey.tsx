@@ -105,7 +105,7 @@ export function Journey({ invite }: { invite: Invite }) {
           <p className="font-serif text-lg font-semibold text-ink/80">{invite.to.city}</p>
           <p className="eyebrow text-[0.55rem] text-gold-700">{invite.to.state}</p>
         </div>
-        <div className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-white/70 px-3 py-1.5 shadow-sm ring-1 ring-gold-300/50 backdrop-blur">
+        <div className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-white/70 px-3 py-1.5 shadow-sm ring-1 ring-gold-300/50">
           <span className="flex items-center gap-1.5 eyebrow text-[0.55rem] text-maroon-600">
             <Icon name="plane" className="size-3" /> {invite.from.date} → {invite.to.date}
           </span>

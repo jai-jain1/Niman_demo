@@ -206,7 +206,7 @@ export function CinematicGate({
               animate={{ opacity: opening ? 0 : 1, y: opening ? -10 : 0 }}
               transition={{ duration: opening ? 0.5 : 1.1, delay: opening ? 0 : 1.6 }}
             >
-              <div className="rounded-2xl bg-maroon-900/55 px-5 py-4 shadow-2xl ring-1 ring-gold-300/35 backdrop-blur-md">
+              <div className="rounded-2xl bg-maroon-900/55 px-5 py-4 shadow-2xl ring-1 ring-gold-300/35">
                 <p className="eyebrow text-[0.58rem] text-gold-200/90">{guest ? "An invitation for" : "You are cordially invited"}</p>
                 <p className="mt-1 font-script text-[2.4rem] leading-tight text-gold-100">{guest ?? "to our wedding"}</p>
                 <p className="mt-1 font-serif text-sm text-gold-100/75 italic">{names}</p>
@@ -218,7 +218,7 @@ export function CinematicGate({
             </div>
 
             <motion.p
-              className="eyebrow pointer-events-none absolute bottom-[11%] left-1/2 -translate-x-1/2 rounded-full bg-maroon-900/65 px-5 py-2.5 text-[0.62rem] whitespace-nowrap text-gold-100 ring-1 ring-gold-300/35 backdrop-blur-md"
+              className="eyebrow pointer-events-none absolute bottom-[11%] left-1/2 -translate-x-1/2 rounded-full bg-maroon-900/65 px-5 py-2.5 text-[0.62rem] whitespace-nowrap text-gold-100 ring-1 ring-gold-300/35"
               initial={{ opacity: 0 }}
               animate={opening ? { opacity: 0 } : { opacity: [0.6, 1, 0.6] }}
               transition={opening ? { duration: 0.3 } : { duration: 2.4, repeat: Infinity, delay: 2.6 }}
@@ -231,7 +231,7 @@ export function CinematicGate({
             <button
               type="button"
               onClick={skip}
-              className="eyebrow absolute top-[max(1rem,env(safe-area-inset-top))] right-4 z-50 rounded-full bg-black/35 px-4 py-2 text-[0.6rem] text-gold-100 ring-1 ring-gold-200/40 backdrop-blur"
+              className="eyebrow absolute top-[max(1rem,env(safe-area-inset-top))] right-4 z-50 rounded-full bg-black/35 px-4 py-2 text-[0.6rem] text-gold-100 ring-1 ring-gold-200/40"
             >
               Skip ›
             </button>

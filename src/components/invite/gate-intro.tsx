@@ -737,7 +737,7 @@ export function GateIntro({
                   animate={{ opacity: ready ? 1 : 0, y: ready ? 0 : 14 }}
                   transition={{ duration: 1, delay: ready ? 1.4 : 0 }}
                 >
-                  <div className="rounded-2xl bg-maroon-900/60 px-5 py-4 shadow-2xl ring-1 ring-gold-300/35 backdrop-blur-md">
+                  <div className="rounded-2xl bg-maroon-900/60 px-5 py-4 shadow-2xl ring-1 ring-gold-300/35">
                     <p className="eyebrow text-[0.58rem] text-gold-200/90">{guest ? "An invitation for" : "You are cordially invited"}</p>
                     <p className="mt-1 font-script text-[2.4rem] leading-tight text-gold-100">{guest ?? "to our wedding"}</p>
                     <p className="mt-1 font-serif text-sm text-gold-100/75 italic">{names}</p>
@@ -757,7 +757,7 @@ export function GateIntro({
                 </div>
 
                 <motion.p
-                  className="eyebrow absolute bottom-[11%] left-1/2 -translate-x-1/2 rounded-full bg-maroon-900/65 px-5 py-2.5 text-[0.62rem] whitespace-nowrap text-gold-100 ring-1 ring-gold-300/35 backdrop-blur-md"
+                  className="eyebrow absolute bottom-[11%] left-1/2 -translate-x-1/2 rounded-full bg-maroon-900/65 px-5 py-2.5 text-[0.62rem] whitespace-nowrap text-gold-100 ring-1 ring-gold-300/35"
                   initial={{ opacity: 0 }}
                   animate={ready ? { opacity: [0.6, 1, 0.6] } : { opacity: 0 }}
                   transition={ready ? { duration: 2.4, repeat: Infinity, delay: 2.4 } : { duration: 0.3 }}
@@ -785,7 +785,7 @@ export function GateIntro({
             <button
               type="button"
               onClick={skip}
-              className="eyebrow absolute top-[max(1rem,env(safe-area-inset-top))] right-4 z-50 rounded-full bg-black/35 px-4 py-2 text-[0.6rem] text-gold-100 ring-1 ring-gold-200/40 backdrop-blur"
+              className="eyebrow absolute top-[max(1rem,env(safe-area-inset-top))] right-4 z-50 rounded-full bg-black/35 px-4 py-2 text-[0.6rem] text-gold-100 ring-1 ring-gold-200/40"
             >
               Skip ›
             </button>

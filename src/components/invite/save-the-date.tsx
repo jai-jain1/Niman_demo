@@ -245,7 +245,7 @@ export function SaveTheDate({ invite }: { invite: Invite }) {
           <button
             type="button"
             onClick={() => downloadIcs(invite.events, couple, invite.slug)}
-            className="mt-10 inline-flex items-center gap-2 rounded-full border border-maroon-500/30 bg-white/60 px-6 py-3 font-display text-xs tracking-[0.2em] text-maroon-600 uppercase shadow-sm backdrop-blur transition hover:bg-maroon-600 hover:text-gold-100"
+            className="mt-10 inline-flex items-center gap-2 rounded-full border border-maroon-500/30 bg-white/60 px-6 py-3 font-display text-xs tracking-[0.2em] text-maroon-600 uppercase shadow-sm transition hover:bg-maroon-600 hover:text-gold-100"
           >
             <Icon name="calendar" /> Add all events to calendar
           </button>

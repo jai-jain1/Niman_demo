@@ -65,11 +65,11 @@ export function Family({ invite }: { invite: Invite }) {
   const kids = invite.littleOnes;
   return (
     <section id="family" className="relative overflow-hidden bg-ivory py-24">
-      <Mandala className="pointer-events-none absolute -top-40 -right-40 w-[30rem] text-gold-400/15 animate-spin-slow [animation-duration:150s]" />
+      <Mandala className="pointer-events-none absolute -top-40 -right-40 w-[30rem] text-gold-400/15 md:animate-spin-slow [animation-duration:150s]" />
       <SectionHeading eyebrow="Awaiting your gracious presence" title="With Blessings From" />
       <div className="relative mx-auto mt-12 grid max-w-4xl gap-5 px-5 sm:grid-cols-2">
         {invite.blessings.map((b, i) => (
-          <Reveal key={b.title} delay={i * 0.08} className="rounded-2xl bg-white/70 px-6 py-6 text-center shadow-sm ring-1 ring-gold-300/50 backdrop-blur">
+          <Reveal key={b.title} delay={i * 0.08} className="rounded-2xl bg-white/70 px-6 py-6 text-center shadow-sm ring-1 ring-gold-300/50">
             <p className="eyebrow text-gold-600">{b.title}</p>
             <div className="mt-3 space-y-1">
               {b.people.map((p) => (

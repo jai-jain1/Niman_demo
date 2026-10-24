@@ -32,7 +32,7 @@ function CalendarMenu({ event, couple, slug, chip }: { event: InviteEvent; coupl
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-display text-[0.65rem] tracking-[0.18em] uppercase ring-1 backdrop-blur transition hover:brightness-110 ${chip}`}
+        className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-display text-[0.65rem] tracking-[0.18em] uppercase ring-1 transition hover:brightness-110 ${chip}`}
       >
         <Icon name="calendar" /> Save
       </button>
@@ -150,7 +150,7 @@ function EventCard({ event, index, total, invite }: { event: InviteEvent; index:
                 href={mapsLink(event.mapQuery)}
                 target="_blank"
                 rel="noreferrer"
-                className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-display text-[0.65rem] tracking-[0.18em] uppercase ring-1 backdrop-blur transition hover:brightness-110 ${t.chip}`}
+                className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-display text-[0.65rem] tracking-[0.18em] uppercase ring-1 transition hover:brightness-110 ${t.chip}`}
               >
                 <Icon name="pin" /> Directions
               </a>

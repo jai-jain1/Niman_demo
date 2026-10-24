@@ -232,7 +232,7 @@ export function PalaceScene({ className = "", showBalcony = true }: { className?
           .ps-palace .mid{fill:#23285a}
           .ps-palace .near{fill:url(#ps-stone)}
           .ps-palace path,.ps-palace rect{stroke:#e3c27a;stroke-opacity:.14;stroke-width:.6}
-          .ps-palace .win{fill:#ffc86b;stroke:none;filter:url(#ps-glow)}
+          .ps-palace .win{fill:#ffc86b;stroke:none}
           .ps-palace .win-off{fill:#2f3570;stroke:none}
           .ps-palace .gate{fill:#ffdf9e}
           .ps-palace .finial{stroke:#e3c27a;stroke-opacity:.8;stroke-width:1.4}
@@ -261,7 +261,7 @@ export function PalaceScene({ className = "", showBalcony = true }: { className?
         </g>
 
         <rect x="0" y="330" width="800" height="190" fill="url(#ps-water)" />
-        <g clipPath="url(#ps-water-clip)" opacity=".42" filter="url(#ps-ripple)">
+        <g clipPath="url(#ps-water-clip)" opacity=".3">
           <g className="ps-palace" transform="translate(0 660) scale(1 -1)">
             <Palace />
           </g>
@@ -274,8 +274,6 @@ export function PalaceScene({ className = "", showBalcony = true }: { className?
       {/* animated details only — cheap to repaint */}
       <svg {...SVG_PROPS} className="absolute inset-0 h-full w-full">
         <style>{`
-          .ps-star{animation:ps-tw 4s ease-in-out infinite}
-          @keyframes ps-tw{0%,100%{opacity:.25}50%{opacity:1}}
           .ps-shimmer{animation:ps-sh 5s ease-in-out infinite}
           @keyframes ps-sh{0%,100%{opacity:.15;transform:translateX(0)}50%{opacity:.45;transform:translateX(6px)}}
           .ps-flame{animation:ps-fl 1.6s ease-in-out infinite;transform-origin:center bottom;transform-box:fill-box}
@@ -283,7 +281,7 @@ export function PalaceScene({ className = "", showBalcony = true }: { className?
           @media (max-width: 767px){.desk-only{display:none}}
         `}</style>
         {stars.map((s, i) => (
-          <circle key={i} className="ps-star" cx={s.x} cy={s.y} r={s.s} fill="#fff" style={{ animationDelay: `${s.d}s` }} />
+          <circle key={i} cx={s.x} cy={s.y} r={s.s} fill="#fff" opacity={0.35 + (s.d / 4) * 0.6} />
         ))}
         {[350, 362, 376, 392, 410].map((y, i) => (
           <path

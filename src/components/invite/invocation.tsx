@@ -9,10 +9,10 @@ export function Invocation({ invite }: { invite: Invite }) {
       <div className="h-[3px] bg-foil" />
       <Toran className="h-24 w-full sm:h-32" />
 
-      <Mandala className="pointer-events-none absolute top-40 left-1/2 w-[46rem] max-w-none -translate-x-1/2 text-gold-400/15 animate-spin-slow [animation-duration:120s]" />
+      <Mandala className="pointer-events-none absolute top-40 left-1/2 w-[46rem] max-w-none -translate-x-1/2 text-gold-400/15 md:animate-spin-slow [animation-duration:120s]" />
 
       <div className="relative mx-auto mt-4 max-w-xl px-5">
-        <Reveal className="relative rounded-[2rem] bg-paper/80 px-6 py-12 text-center shadow-[0_30px_80px_-30px_rgba(95,15,30,.35)] ring-1 ring-gold-300/50 backdrop-blur-sm sm:px-12">
+        <Reveal className="relative rounded-[2rem] bg-paper/80 px-6 py-12 text-center shadow-[0_30px_80px_-30px_rgba(95,15,30,.35)] ring-1 ring-gold-300/50 sm:px-12">
           <div className="pointer-events-none absolute inset-3 rounded-[1.6rem] ring-1 ring-gold-400/40" />
           <CornerFlourish className="absolute top-4 left-4 w-14 text-gold-500/70" />
           <CornerFlourish className="absolute top-4 right-4 w-14 -scale-x-100 text-gold-500/70" />

@@ -66,7 +66,9 @@ export type Invite = {
    * fall back to a gentle synthesised tanpura.
    */
   music?: { entry?: SongClip; background?: SongClip };
-  /** Rendered artwork for the cinematic entry. Missing files fall back to the illustrated gate. */
+  /** Opening style: an embossed envelope with a 3D wax seal (default), or the palace gates. */
+  entry?: "envelope" | "gate";
+  /** Rendered artwork for the palace-gate entry. Missing files fall back to the illustrated gate. */
   intro?: IntroArt;
 };
 

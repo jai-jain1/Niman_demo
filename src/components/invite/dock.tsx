@@ -59,7 +59,7 @@ export function Dock({
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="fixed right-20 bottom-[calc(max(1rem,env(safe-area-inset-bottom))+0.6rem)] z-50 flex max-w-[60vw] items-center gap-2 rounded-full bg-maroon-900/85 py-2 pr-4 pl-3 text-gold-100 shadow-xl ring-1 ring-gold-300/40 backdrop-blur-xl"
+            className="fixed right-20 bottom-[calc(max(1rem,env(safe-area-inset-bottom))+0.6rem)] z-50 flex max-w-[60vw] items-center gap-2 rounded-full bg-maroon-900/95 py-2 pr-4 pl-3 text-gold-100 shadow-xl ring-1 ring-gold-300/40"
             role="status"
           >
             <span className="flex h-3 items-end gap-[2px]" aria-hidden>
@@ -109,7 +109,7 @@ export function Dock({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 90, opacity: 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 26 }}
-            className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-50 flex items-center gap-1 rounded-full bg-maroon-900/85 p-1.5 shadow-2xl ring-1 ring-gold-300/40 backdrop-blur-xl sm:left-1/2 sm:-translate-x-1/2"
+            className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-50 flex items-center gap-1 rounded-full bg-maroon-900/95 p-1.5 shadow-2xl ring-1 ring-gold-300/40 sm:left-1/2 sm:-translate-x-1/2"
             aria-label="Invitation sections"
           >
             {LINKS.map((l) => (
